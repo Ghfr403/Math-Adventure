@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yuk Belajar Matematika!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF8E7; --ink:#33314A; --card:#FFFFFF; --line:#F0E4C0;
+    --blue:#3AA5D8; --blue-d:#2C87B4; --pink:#F0628A; --yellow:#F7B733; --green:#4CAF6D; --purple:#8B6FD6;
+    --ok:#2FAE63; --bad:#E8564A;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Quicksand',sans-serif;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--line) 2px, transparent 2px);
+    background-size:26px 26px;
+  }
+  h1,h2,h3,.brand{font-family:'Baloo 2',sans-serif;}
+  .view{display:none; min-height:100%; width:100%;}
+  .view.active{display:block;}
+
+  /* ---------- LOGIN ---------- */
+  #view-login.active{display:flex;}
+  .login-wrap{display:flex; width:100%; min-height:100vh;}
+  .login-side{flex:1.1; background:linear-gradient(160deg,var(--blue),var(--purple)); color:#fff; padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between;}
+  .login-side h1{font-size:clamp(30px,4.4vw,46px); line-height:1.2; margin:0 0 16px; font-weight:800;}
+  .login-side p{max-width:36ch; opacity:.92; line-height:1.6; font-size:16px;}
+  .badge{display:inline-flex; gap:8px; align-items:center; font-size:14px; font-weight:700; background:rgba(255,255,255,.18); padding:8px 14px; border-radius:999px;}
+  .login-form-side{flex:1; display:flex; align-items:center; justify-content:center; padding:32px;}
+  .login-card{width:100%; max-width:360px;}
+  .login-card h2{font-size:26px; margin:0 0 6px; color:var(--pink);}
+  .login-card .sub{color:var(--ink); opacity:.65; font-size:15px; margin:0 0 26px;}
+  label{display:block; font-size:14px; font-weight:700; margin:0 0 6px;}
+  input{width:100%; padding:13px 16px; border:2px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); font-size:16px; margin-bottom:18px; font-family:inherit;}
+  input:focus{outline:3px solid var(--yellow); outline-offset:1px; border-color:var(--yellow);}
+  .btn{appearance:none; border:none; cursor:pointer; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:16px; border-radius:14px; padding:13px 22px; transition:transform .12s ease; box-shadow:0 4px 0 rgba(0,0,0,.15);}
+  .btn:active{transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.15);}
+  .btn-primary{background:var(--pink); color:#fff; width:100%;}
+  .login-note{margin-top:16px; font-size:13px; color:var(--ink); opacity:.55;}
+  @media (max-width:760px){ .login-wrap{flex-direction:column;} .login-side{padding:36px 28px;} }
+
+  /* ---------- HOME ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:18px 32px; border-bottom:3px solid var(--line);}
+  .brand{font-weight:800; font-size:20px; color:var(--blue-d); display:flex; gap:10px; align-items:center;}
+  .who{font-size:15px; font-weight:600; display:flex; gap:14px; align-items:center;}
+  .link-btn{background:none;border:none;color:var(--pink);font-weight:700;cursor:pointer;font-size:14px;font-family:'Baloo 2',sans-serif;}
+  .home-hero{padding:36px 32px 8px; max-width:760px;}
+  .home-hero h1{font-size:clamp(26px,3.6vw,34px); margin:0 0 8px; color:var(--purple);}
+  .home-hero p{opacity:.75; line-height:1.6; margin:0; font-weight:600;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; padding:26px 32px 50px; max-width:1080px;}
+  .tile{border:none; border-radius:20px; padding:24px; cursor:pointer; text-align:left; font-family:inherit; color:#fff; display:flex; flex-direction:column; gap:8px; min-height:160px; box-shadow:0 6px 0 rgba(0,0,0,.12);}
+  .tile:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.12);}
+  .tile .emoji{font-size:38px;}
+  .tile h3{margin:0; font-size:19px; font-family:'Baloo 2',sans-serif;}
+  .tile p{margin:0; font-size:13.5px; opacity:.95; line-height:1.5; font-weight:600;}
+  .tile .count{margin-top:auto; font-size:12.5px; font-weight:700; background:rgba(255,255,255,.25); padding:4px 10px; border-radius:999px; width:fit-content;}
+  .t-blue{background:var(--blue);} .t-pink{background:var(--pink);} .t-green{background:var(--green);} .t-purple{background:var(--purple);}
+
+  /* ---------- ACTIVITY ---------- */
+  .activity-header{display:flex; align-items:center; gap:14px; padding:18px 32px; border-bottom:3px solid var(--line);}
+  .back-btn{background:var(--yellow);border:none;border-radius:12px;padding:9px 16px;cursor:pointer;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:14px;color:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.12);}
+  .activity-header h2{margin:0; font-size:20px; color:var(--purple);}
+  .activity-body{max-width:640px; margin:0 auto; padding:36px 24px 60px;}
+  .progress{font-size:14px; font-weight:700; opacity:.6; margin-bottom:16px;}
+  .q-card{background:var(--card); border:3px solid var(--line); border-radius:22px; padding:28px;}
+  .q-text{font-size:22px; font-weight:700; margin:0 0 20px; line-height:1.4; font-family:'Baloo 2',sans-serif; color:var(--ink);}
+  .opt{display:block; width:100%; text-align:left; padding:14px 18px; border:2px solid var(--line); border-radius:14px; background:var(--bg); margin-bottom:10px; cursor:pointer; font-family:'Quicksand',sans-serif; font-weight:700; font-size:16px; color:var(--ink);}
+  .opt:hover{border-color:var(--blue);}
+  .opt.correct{border-color:var(--ok); background:rgba(47,174,99,.14); color:var(--ok);}
+  .opt.wrong{border-color:var(--bad); background:rgba(232,86,74,.14); color:var(--bad);}
+  .tf-row{display:flex; gap:12px; margin-top:6px;}
+  .tf-row .opt{flex:1; text-align:center; font-size:17px;}
+  .feedback{margin-top:16px; font-size:15px; font-weight:700; min-height:20px;}
+  .feedback.ok{color:var(--ok);} .feedback.bad{color:var(--bad);}
+  .nav-row{display:flex; justify-content:flex-end; margin-top:22px;}
+  .blank-input{border:none; border-bottom:3px solid var(--blue); background:transparent; font-size:20px; width:70px; text-align:center; font-family:'Baloo 2',sans-serif; font-weight:700; color:var(--ink); padding:2px 4px;}
+  .fc-card{position:relative; background:linear-gradient(160deg,var(--purple),var(--blue)); color:#fff; border-radius:22px; padding:50px 28px; text-align:center; font-size:24px; font-weight:700; min-height:170px; display:flex; align-items:center; justify-content:center; cursor:pointer; line-height:1.5; font-family:'Baloo 2',sans-serif;}
+  .fc-hint{text-align:center; font-size:13px; font-weight:600; opacity:.6; margin-top:10px;}
+  .fc-controls{display:flex; justify-content:space-between; margin-top:20px;}
+  .result-card{text-align:center; padding:44px 20px;}
+  .result-card .score{font-size:52px; font-weight:800; color:var(--pink); margin:8px 0 4px; font-family:'Baloo 2',sans-serif; animation:pop .5s ease;}
+
+  /* ---------- ANIMASI ---------- */
+  .floaters{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;}
+  .floaters span{position:absolute; font-size:28px; opacity:.35; animation:floaty 7s ease-in-out infinite;}
+  .login-side{position:relative;}
+  .home-hero{position:relative;}
+  @keyframes floaty{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-18px) rotate(8deg);} }
+  @keyframes pop{ 0%{transform:scale(.4); opacity:0;} 70%{transform:scale(1.12);} 100%{transform:scale(1); opacity:1;} }
+  @keyframes popIn{ from{transform:scale(.85) translateY(10px); opacity:0;} to{transform:scale(1) translateY(0); opacity:1;} }
+  @keyframes shakeX{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(5px);} }
+  @keyframes bounceIn{ 0%{transform:scale(1);} 40%{transform:scale(1.18);} 100%{transform:scale(1);} }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes wiggle{ 0%,100%{transform:rotate(0);} 25%{transform:rotate(-3deg);} 75%{transform:rotate(3deg);} }
+
+  .tile{clip-path:inset(100% 0 0 0 round 20px); transform:translateY(14px); animation:peekReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+  .tile:nth-child(1){animation-delay:.05s;} .tile:nth-child(2){animation-delay:.2s;}
+  .tile:nth-child(3){animation-delay:.35s;} .tile:nth-child(4){animation-delay:.5s;}
+  @keyframes peekReveal{
+    0%{ clip-path:inset(100% 0 0 0 round 20px); transform:translateY(14px); }
+    60%{ clip-path:inset(-10% 0 0 0 round 20px); transform:translateY(-4px); }
+    100%{ clip-path:inset(0 0 0 0 round 20px); transform:translateY(0); }
+  }
+  .tile:hover{transform:translateY(-4px); transition:transform .2s ease;}
+  .q-card{animation:popIn .35s ease;}
+  .opt.correct{animation:bounceIn .4s ease;}
+  .opt.wrong{animation:shakeX .4s ease;}
+
+  .fc-flip-wrap{perspective:1200px;}
+  .fc-card{transition:transform .5s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d;}
+  .fc-card.flip{transform:rotateY(180deg);}
+  .fc-card .face{backface-visibility:hidden;}
+  .fc-card .face.back{transform:rotateY(180deg); position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:28px;}
+
+  .sound-btn{background:none; border:2px solid var(--line); border-radius:999px; width:38px; height:38px; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .confetti{position:fixed; top:-20px; font-size:22px; animation:confettiFall linear forwards; z-index:50; pointer-events:none;}
+  @keyframes confettiFall{ to{ transform:translateY(105vh) rotate(360deg); opacity:.2; } }
+
+  /* ---------- MASKOT & HIASAN ---------- */
+  @keyframes bob{ 0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-10px) rotate(3deg);} }
+  .mascot-wrap{position:fixed; right:18px; bottom:18px; display:flex; align-items:flex-end; gap:8px; z-index:40; pointer-events:none;}
+  .mascot-bubble{background:#fff; border:3px solid var(--purple); border-radius:16px 16px 4px 16px; padding:10px 14px; font-size:13.5px; font-weight:700; max-width:190px; box-shadow:0 4px 0 rgba(0,0,0,.08); color:var(--ink);}
+  .mascot-face{font-size:52px; animation:bob 2.4s ease-in-out infinite;}
+  #view-login .mascot-wrap, #view-login ~ .mascot-wrap{display:none;}
+
+  .star-badge{display:flex; align-items:center; gap:5px; background:var(--yellow); color:#5A3E00; font-weight:800; font-size:14px; padding:6px 12px; border-radius:999px; box-shadow:0 3px 0 rgba(0,0,0,.1);}
+
+  .pbar-track{height:12px; background:var(--line); border-radius:999px; overflow:hidden; margin-bottom:16px;}
+  .pbar-fill{height:100%; background:linear-gradient(90deg,var(--green),var(--blue)); border-radius:999px; transition:width .4s ease;}
+
+  .tile{position:relative; overflow:visible;}
+  .tile::after{content:"⭐"; position:absolute; top:-10px; right:-8px; font-size:22px; filter:drop-shadow(0 2px 1px rgba(0,0,0,.15)); animation:bob 2.6s ease-in-out infinite;}
+
+  .q-card{position:relative; border-style:dashed;}
+</style>
+</head>
+<body>
+
+<div id="view-login" class="view active">
+  <div class="login-wrap">
+    <div class="login-side">
+      <div class="floaters">
+        <span style="left:8%; top:12%;">➕</span>
+        <span style="left:85%; top:18%; animation-delay:1s;">⭐</span>
+        <span style="left:20%; top:70%; animation-delay:2s;">🔺</span>
+        <span style="left:70%; top:65%; animation-delay:.5s;">✖️</span>
+        <span style="left:45%; top:40%; animation-delay:1.5s;">🎲</span>
+      </div>
+      <div>
+        <span class="badge">🎈 Math Adventure · Kelas 2 SD</span>
+        <h1 style="margin-top:16px;">Ayo main sambil belajar berhitung!</h1>
+        <p>Ada kuis, tebak benar-salah, isi angka, dan kartu seru tentang matematika kelas 2 SD. Yuk masuk dulu, ya!</p>
+      </div>
+      <p style="font-size:13px;opacity:.85;font-weight:600;">Latihan ini gratis untuk semua anak hebat 🌟</p>
+    </div>
+    <div class="login-form-side">
+      <div class="login-card">
+        <h2>Halo, siapa namamu? 👋</h2>
+        <p class="sub">Isi namamu untuk mulai bermain.</p>
+        <form id="login-form">
+          <label for="lg-user">Nama kamu</label>
+          <input id="lg-user" type="text" placeholder="mis. Kirana" required>
+          <label for="lg-pass">Kata sandi rahasia</label>
+          <input id="lg-pass" type="password" placeholder="••••••••" required>
+          <button class="btn btn-primary" type="submit">Mulai Belajar! 🚀</button>
+        </form>
+        <p class="login-note">Latihan ini hanya demo, tidak menyimpan data ke mana pun.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="view-home" class="view">
+  <div class="topbar">
+    <div class="brand">🧮 Math Adventure</div>
+    <div class="who"><span class="star-badge">⭐ <span id="star-count">0</span></span><button class="sound-btn" id="music-btn" title="Musik on/off">🎵</button><button class="sound-btn" id="sound-btn" title="Suara on/off">🔊</button><span id="who-name"></span><button class="link-btn" id="logout-btn">Keluar</button></div>
+  </div>
+  <div class="home-hero">
+    <div class="floaters" style="opacity:.5;">
+      <span style="left:90%; top:5%;">🌟</span>
+      <span style="left:80%; top:60%; animation-delay:1.2s;">🔢</span>
+    </div>
+    <h1>Pilih permainan matematika Kelas 2 SD!</h1>
+    <p>Belajar penjumlahan-pengurangan dua angka, perkalian awal, nilai tempat, sampai bangun datar. Kamu mau mulai dari yang mana?</p>
+  </div>
+  <div class="grid" id="tile-grid"></div>
+</div>
+
+<div id="view-activity" class="view">
+  <div class="activity-header">
+    <button class="back-btn" id="back-btn">← Kembali</button>
+    <h2 id="activity-title"></h2>
+    <span class="star-badge" style="margin-left:auto;">⭐ <span id="star-count-2">0</span></span>
+  </div>
+  <div class="activity-body" id="activity-body"></div>
+</div>
+
+<div class="mascot-wrap" id="mascot-wrap" style="display:none;">
+  <div class="mascot-bubble" id="mascot-msg">Ayo kita belajar bareng! 🦉</div>
+  <div class="mascot-face">🦉</div>
+</div>
+
+<script>
+const ACTIVITIES = {
+  mc: {
+    title: "Kuis Berhitung", tclass:"t-blue", emoji:"🧮",
+    desc: "Pilih jawaban yang paling benar, yuk!",
+    count: "5 soal",
+    items: [
+      {q:"45 + 23 = ...?", opts:["68","58","78","66"], correct:0},
+      {q:"68 - 25 = ...?", opts:["53","43","33","45"], correct:1},
+      {q:"Bilangan mana yang lebih besar?", opts:["47","52","39","41"], correct:1},
+      {q:"4 × 3 sama dengan penjumlahan berulang...?", opts:["4+4","3+3+3+3","4+3","3+4+3"], correct:1},
+      {q:"Bangun datar segi empat punya berapa sisi?", opts:["3","4","5","6"], correct:1}
+    ]
+  },
+  tf: {
+    title: "Benar atau Salah", tclass:"t-pink", emoji:"✅",
+    desc: "Tebak pernyataannya, benar atau salah?",
+    count: "5 pernyataan",
+    items: [
+      {q:"100 lebih besar dari 99.", correct:true},
+      {q:"7 × 2 hasilnya 12.", correct:false},
+      {q:"50 - 20 hasilnya 30.", correct:true},
+      {q:"Segi empat punya 3 sudut.", correct:false},
+      {q:"Satu jam sama dengan 60 menit.", correct:true}
+    ]
+  },
+  fib: {
+    title: "Isi Angkanya", tclass:"t-green", emoji:"✏️",
+    desc: "Lengkapi hitungan dengan angka yang tepat.",
+    count: "5 soal",
+    items: [
+      {before:"34 + ", after:" = 50", answer:"16"},
+      {before:"90 - ", after:" = 45", answer:"45"},
+      {before:"6 × ", after:" = 18", answer:"3"},
+      {before:"Lanjutkan urutannya: 10, 20, ", after:", 40", answer:"30"},
+      {before:"Rp500 + Rp200 = Rp ", after:"", answer:"700"}
+    ]
+  },
+  fc: {
+    title: "Kartu Pintar", tclass:"t-purple", emoji:"🃏",
+    desc: "Balik kartu untuk lihat artinya.",
+    count: "6 kartu",
+    items: [
+      {front:"🔟 Puluhan", back:"Nilai tempat angka kedua dari kanan. Pada 45, angka 4 bernilai 40."},
+      {front:"1️⃣ Satuan", back:"Nilai tempat angka paling kanan. Pada 45, angka 5 bernilai 5."},
+      {front:"➕ Penjumlahan Bersusun", back:"Cara menjumlah dua bilangan dengan menuliskannya berbaris ke bawah sesuai nilai tempatnya."},
+      {front:"➖ Pengurangan Bersusun", back:"Cara mengurangi bilangan dengan menuliskannya berbaris ke bawah sesuai nilai tempatnya."},
+      {front:"✖️ Perkalian", back:"Penjumlahan berulang dari bilangan yang sama. Contoh: 3×4 = 4+4+4."},
+      {front:"🟦 Segi Empat", back:"Bangun datar yang punya 4 sisi dan 4 sudut, contohnya persegi dan persegi panjang."}
+    ]
+  }
+};
+
+let userName = "";
+let state = {};
+let soundOn = true;
+let musicOn = true;
+let totalStars = 0;
+let actx = null;
+let musicTimerId = null;
+let musicGen = 0;
+
+const MELODY = [
+  [523,.3],[659,.3],[784,.3],[659,.3],
+  [523,.3],[659,.3],[784,.45],[0,.15],
+  [698,.3],[784,.3],[880,.3],[784,.3],
+  [698,.3],[659,.3],[523,.6]
+];
+
+function startMusic(){
+  if(!soundOn || !musicOn) return;
+  try{
+    if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  }catch(e){ return; }
+  musicGen++;
+  const gen = musicGen;
+  let i = 0;
+  function playNext(){
+    if(gen !== musicGen || !musicOn || !soundOn) return;
+    const [freq,dur] = MELODY[i % MELODY.length];
+    if(freq>0){
+      const t = actx.currentTime;
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.type='triangle';
+      osc.frequency.setValueAtTime(freq,t);
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.exponentialRampToValueAtTime(.07,t+.03);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+dur*.95);
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.start(t); osc.stop(t+dur);
+    }
+    i++;
+    musicTimerId = setTimeout(playNext, dur*1000);
+  }
+  playNext();
+}
+function stopMusic(){
+  musicGen++;
+  if(musicTimerId) clearTimeout(musicTimerId);
+}
+document.getElementById('music-btn').addEventListener('click', ()=>{
+  musicOn = !musicOn;
+  document.getElementById('music-btn').textContent = musicOn ? '🎵' : '🔕';
+  if(musicOn) startMusic(); else stopMusic();
+});
+
+function playSound(type){
+  if(!soundOn) return;
+  try{
+    if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = actx.currentTime;
+    const notes = {
+      click:[[660,.08]],
+      flip:[[500,.07],[700,.07]],
+      correct:[[523,.1],[659,.1],[784,.16]],
+      wrong:[[300,.15],[220,.22]],
+      win:[[523,.1],[659,.1],[784,.1],[1047,.22]]
+    }[type] || [[440,.1]];
+    let t = now;
+    notes.forEach(([freq,dur])=>{
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.type = type==='wrong' ? 'sawtooth' : 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(.0001, t);
+      gain.gain.exponentialRampToValueAtTime(.18, t+.02);
+      gain.gain.exponentialRampToValueAtTime(.0001, t+dur);
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.start(t); osc.stop(t+dur+.02);
+      t += dur*.85;
+    });
+  }catch(e){}
+}
+
+function fireConfetti(){
+  const emojis = ['🎉','⭐','🎊','✨','🟦','🔺'];
+  for(let i=0;i<18;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100+'vw';
+    el.style.animationDuration = (2+Math.random()*1.5)+'s';
+    el.style.fontSize = (16+Math.random()*16)+'px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 3600);
+  }
+}
+
+document.getElementById('sound-btn').addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  document.getElementById('sound-btn').textContent = soundOn ? '🔊' : '🔇';
+  if(soundOn){ playSound('click'); startMusic(); } else { stopMusic(); }
+});
+
+function show(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('mascot-wrap').style.display = (id==='view-login') ? 'none' : 'flex';
+}
+
+function setMascot(msg){
+  document.getElementById('mascot-msg').textContent = msg;
+}
+
+function updateStars(){
+  document.getElementById('star-count').textContent = totalStars;
+  document.getElementById('star-count-2').textContent = totalStars;
+}
+
+document.getElementById('login-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  userName = document.getElementById('lg-user').value.trim() || "Sobat Pintar";
+  document.getElementById('who-name').textContent = "Hai, " + userName + "! 👋";
+  playSound('win');
+  buildTiles();
+  show('view-home');
+  setMascot("Halo " + userName + "! Pilih permainan yang kamu suka ya! 🎈");
+  startMusic();
+});
+document.getElementById('logout-btn').addEventListener('click', ()=> { playSound('click'); show('view-login'); });
+document.getElementById('back-btn').addEventListener('click', ()=> { playSound('click'); show('view-home'); });
+
+function buildTiles(){
+  const grid = document.getElementById('tile-grid');
+  grid.innerHTML = '';
+  Object.keys(ACTIVITIES).forEach(key=>{
+    const a = ACTIVITIES[key];
+    const btn = document.createElement('button');
+    btn.className = 'tile ' + a.tclass;
+    btn.innerHTML = `<span class="emoji">${a.emoji}</span><h3>${a.title}</h3><p>${a.desc}</p><span class="count">${a.count}</span>`;
+    btn.addEventListener('click', ()=> { playSound('click'); openActivity(key); });
+    grid.appendChild(btn);
+  });
+}
+
+const MASCOT_START = {mc:"Ayo berhitung, kamu pasti bisa! 🧮", tf:"Benar atau salah ya? Pikirkan baik-baik! 🤔", fib:"Isi angkanya, semangat! ✏️", fc:"Klik kartunya untuk belajar istilah baru! 🃏"};
+
+function openActivity(key){
+  const a = ACTIVITIES[key];
+  document.getElementById('activity-title').textContent = a.title;
+  state = {key, idx:0, score:0};
+  show('view-activity');
+  setMascot(MASCOT_START[key]);
+  render();
+}
+
+function render(){
+  const a = ACTIVITIES[state.key];
+  const body = document.getElementById('activity-body');
+  if(state.idx >= a.items.length){
+    body.innerHTML = `<div class="q-card result-card">
+      <p style="opacity:.65;margin:0;font-weight:700;">Selesai! Hebat! 🎉</p>
+      <div class="score">${state.score}/${a.items.length}</div>
+      <p style="opacity:.65;margin:0 0 20px;font-weight:700;">jawaban benar</p>
+      <button class="btn btn-primary" style="width:auto;" onclick="openActivity('${state.key}')">Main Lagi 🔁</button>
+    </div>`;
+    playSound('win'); fireConfetti();
+    setMascot('Kamu hebat sekali hari ini! 🏆');
+    return;
+  }
+  const item = a.items[state.idx];
+  const pct = Math.round((state.idx/a.items.length)*100);
+  const progress = `<div class="progress">Soal ${state.idx+1} dari ${a.items.length}</div>
+    <div class="pbar-track"><div class="pbar-fill" style="width:${pct}%;"></div></div>`;
+
+  if(state.key === 'mc'){
+    body.innerHTML = `${progress}<div class="q-card"><p class="q-text">${item.q}</p>
+      <div id="opts"></div><div class="feedback" id="fb"></div>
+      <div class="nav-row"><button class="btn btn-primary" style="width:auto;display:none;" id="next-btn" onclick="nextItem()">Lanjut →</button></div>
+      </div>`;
+    const opts = document.getElementById('opts');
+    item.opts.forEach((o,i)=>{
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=o;
+      b.onclick=()=>answerMC(i);
+      opts.appendChild(b);
+    });
+  }
+  if(state.key === 'tf'){
+    body.innerHTML = `${progress}<div class="q-card"><p class="q-text">${item.q}</p>
+      <div class="tf-row">
+        <button class="opt" onclick="answerTF(true)">✅ Benar</button>
+        <button class="opt" onclick="answerTF(false)">❌ Salah</button>
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="nav-row"><button class="btn btn-primary" style="width:auto;display:none;" id="next-btn" onclick="nextItem()">Lanjut →</button></div>
+      </div>`;
+  }
+  if(state.key === 'fib'){
+    body.innerHTML = `${progress}<div class="q-card"><p class="q-text">${item.before}<input class="blank-input" id="blank-in" autocomplete="off">${item.after}</p>
+      <button class="btn btn-primary" style="width:auto;" onclick="answerFIB()">Periksa ✅</button>
+      <div class="feedback" id="fb"></div>
+      <div class="nav-row"><button class="btn btn-primary" style="width:auto;display:none;" id="next-btn" onclick="nextItem()">Lanjut →</button></div>
+      </div>`;
+  }
+  if(state.key === 'fc'){
+    body.innerHTML = `${progress}<div class="fc-flip-wrap"><div class="fc-card" id="fc-card" onclick="flipCard()">
+        <div class="face front">${item.front}</div>
+        <div class="face back">${item.back}</div>
+      </div></div>
+      <p class="fc-hint">👆 Klik kartu untuk membalik</p>
+      <div class="fc-controls">
+        <button class="back-btn" onclick="fcNav(-1)">← Sebelumnya</button>
+        <button class="back-btn" onclick="fcNav(1)">Berikutnya →</button>
+      </div>`;
+    state.flipped = false;
+  }
+}
+
+function nextItem(){ state.idx++; render(); }
+
+function answerMC(i){
+  const a = ACTIVITIES.mc.items[state.idx];
+  const opts = document.querySelectorAll('#opts .opt');
+  opts.forEach((o,j)=>{
+    o.disabled = true;
+    if(j===a.correct) o.classList.add('correct');
+    else if(j===i) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  if(i===a.correct){ fb.textContent='Betul sekali! Kamu hebat! 🌟'; fb.className='feedback ok'; state.score++; totalStars++; updateStars(); playSound('correct'); setMascot('Hore, jawabanmu tepat! 🎉'); }
+  else { fb.textContent='Belum tepat, jawaban benar sudah ditandai ya.'; fb.className='feedback bad'; playSound('wrong'); setMascot('Belum tepat, ayo coba lagi nanti! 💪'); }
+  document.getElementById('next-btn').style.display='inline-block';
+}
+
+function answerTF(val){
+  const a = ACTIVITIES.tf.items[state.idx];
+  const fb = document.getElementById('fb');
+  document.querySelectorAll('.tf-row .opt').forEach(b=>b.disabled=true);
+  if(val===a.correct){ fb.textContent='Betul sekali! Kamu hebat! 🌟'; fb.className='feedback ok'; state.score++; totalStars++; updateStars(); playSound('correct'); setMascot('Hore, jawabanmu tepat! 🎉'); }
+  else { fb.textContent='Belum tepat. Pernyataan ini ' + (a.correct?'benar, lho.':'salah, lho.'); fb.className='feedback bad'; playSound('wrong'); setMascot('Belum tepat, ayo coba lagi nanti! 💪'); }
+  document.getElementById('next-btn').style.display='inline-block';
+}
+
+function answerFIB(){
+  const a = ACTIVITIES.fib.items[state.idx];
+  const val = document.getElementById('blank-in').value.trim();
+  const fb = document.getElementById('fb');
+  if(val===a.answer){ fb.textContent='Betul sekali! Kamu hebat! 🌟'; fb.className='feedback ok'; state.score++; totalStars++; updateStars(); playSound('correct'); setMascot('Hore, jawabanmu tepat! 🎉'); }
+  else { fb.textContent=`Belum tepat, jawabannya: ${a.answer}`; fb.className='feedback bad'; playSound('wrong'); setMascot('Belum tepat, ayo coba lagi nanti! 💪'); }
+  document.getElementById('blank-in').disabled=true;
+  document.getElementById('next-btn').style.display='inline-block';
+}
+
+function flipCard(){
+  state.flipped = !state.flipped;
+  document.getElementById('fc-card').classList.toggle('flip', state.flipped);
+  playSound('flip');
+}
+function fcNav(dir){
+  const n = ACTIVITIES.fc.items.length;
+  state.idx = (state.idx + dir + n) % n;
+  playSound('click');
+  render();
+}
+</script>
+</body>
+</html>
